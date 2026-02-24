@@ -1,0 +1,7 @@
+Anotando os passos do processo de construção :
+
+- Download do Notebook e Dataset (Link : https://www.kaggle.com/datasets/marcosgabriel/infrared-solar-modules/code)
+- Criação e ativação do Env (Python 3.10.6)
+- Instalação das bibliotecas : opencv-python , pandas, Pillow, matplotlib, torch, torchvision, scikit-learn
+- Criei o arquivo requirements.txt
+- Testeis as células individualmente
