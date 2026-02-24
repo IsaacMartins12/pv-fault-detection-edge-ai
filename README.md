@@ -1,8 +1,3 @@
-# InfraredSolarModules
-
-## Motivation
-InfraredSolarModules is a machine learning dataset that contains real-world imagery of different anomalies found in solar farms. This dataset can be used for machine learning research to gain efficiencies in the solar industry. Infrared imagery is not widely available to researchers. In order to combat the lack of publicly available data on infrared imagery of anomalies in solar PV, this project presents a novel, labeled dataset to facilitate research to solve problems well suited for machine learning that can have environmental impact.
-
 ## Data
 The dataset consists of 20,000 infrared images that are 24 by 40 pixels each. There are 12 defined classes of solar modules presented in this paper with 11 classes of different anomalies and the remaining class being No-Anomaly (i.e. the null case).
 
@@ -21,7 +16,7 @@ The dataset consists of 20,000 infrared images that are 24 by 40 pixels each. Th
 | Offline-Module | 828    | Entire module is heated.                                                  |
 | No-Anomaly     | 10,000 | Nominal solar module.                                                     |
 
-The file `2020-02-14_InfraredSolarModules.zip` contains the `images` directory and `module_metadata.json` that describes each image. The JSON file is structured as follows:
+The folder `Dataset` contains the `images` directory and `module_metadata.json` that describes each image. The JSON file is structured as follows:
 
 ```
 {
