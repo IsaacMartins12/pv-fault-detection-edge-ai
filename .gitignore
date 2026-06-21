@@ -1,0 +1,41 @@
+# ── Dataset e dados gerados ──────────────────────────────────────
+data/
+data_split/
+
+# ── Modelos treinados (geralmente grandes para o Git) ────────────
+models/
+*.h5
+*.keras
+*.tflite
+*.weights.h5
+
+# ── Resultados gerados automaticamente ───────────────────────────
+results/
+results_raspberry/
+*.csv
+!requirements*.txt
+
+# ── Ambiente Python ───────────────────────────────────────────────
+env/
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+
+# ── Jupyter ────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+
+# ── Sistema operacional ────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Editor / IDE ───────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+
+# ── Logs ────────────────────────────────────────────────────────────
+*.log

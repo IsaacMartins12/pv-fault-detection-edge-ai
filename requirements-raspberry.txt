@@ -1,0 +1,13 @@
+# Dependências para inferência embarcada (Raspberry Pi)
+# Instale com: pip install -r requirements-raspberry.txt
+#
+# tflite-runtime é mais leve que o TensorFlow completo —
+# ideal para hardware com recursos limitados.
+
+tflite-runtime>=2.14
+opencv-python-headless>=4.8
+numpy>=1.24
+pandas>=2.0
+matplotlib>=3.7
+scikit-learn>=1.3
+psutil>=5.9
