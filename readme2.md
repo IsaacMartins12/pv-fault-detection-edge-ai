@@ -1,12 +1,11 @@
 # 🌞 Detecção de Defeitos em Módulos Fotovoltaicos por Imagens Termográficas
 
-> Estudo comparativo de redes neurais convolucionais leves com quantização pós-treinamento para deploy em sistema embarcado (Raspberry Pi), com rastreamento completo de experimentos via MLflow.
+> Estudo comparativo de redes neurais convolucionais leves com quantização pós-treinamento para deploy em sistema embarcado (Raspberry Pi).
 
 [![Python](https://img.shields.io/badge/Python-3.10-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-FF6F00?logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
 [![Keras](https://img.shields.io/badge/Keras-3.x-D00000?logo=keras&logoColor=white)](https://keras.io/)
 [![TFLite](https://img.shields.io/badge/TensorFlow-Lite-FF6F00?logo=tensorflow&logoColor=white)](https://www.tensorflow.org/lite)
-[![MLflow](https://img.shields.io/badge/MLflow-3.x-0194E2?logo=mlflow&logoColor=white)](https://mlflow.org/)
 [![Raspberry Pi](https://img.shields.io/badge/Raspberry%20Pi-4%20Model%20B-A22846?logo=raspberrypi&logoColor=white)](https://www.raspberrypi.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -17,12 +16,10 @@
 - [Sobre o projeto](#-sobre-o-projeto)
 - [Resultados principais](#-resultados-principais)
 - [Pipeline](#-pipeline)
-- [Experiment Tracking (MLflow)](#-experiment-tracking-mlflow)
 - [Estrutura do repositório](#-estrutura-do-repositório)
 - [Dataset](#-dataset)
 - [Instalação](#-instalação)
 - [Como usar](#-como-usar)
-- [Decisões técnicas](#-decisões-técnicas)
 - [Resultados detalhados](#-resultados-detalhados)
 - [Hardware utilizado](#-hardware-utilizado)
 - [Limitações e trabalhos futuros](#-limitações-e-trabalhos-futuros)
@@ -81,71 +78,37 @@ flowchart LR
 
 ---
 
-## 🧪 Experiment Tracking (MLflow)
-
-O projeto utiliza **MLflow** para documentar todo o processo de experimentação com rigor de engenharia de ML:
-
-- **Histórico de hipóteses** — Cada iteração (v1 → v2 → v3 → final) registrada com hipótese, conclusão e próximo passo
-- **Ablation studies** — Impacto isolado do colormap INFERNO (+4%), equalização de histograma (+2%) e interpolação bicúbica (+0.5%)
-- **Comparativo de arquiteturas** — Métricas lado a lado com hiperparâmetros completos
-- **Métricas por época** — Curvas de loss e accuracy logadas automaticamente durante treino
-- **Métricas de quantização** — Perda de acurácia e compressão por formato (F16, INT8)
-- **Artifacts** — Confusion matrices, modelos `.keras` e `.tflite`, históricos de treino
-
-### Visualização
-
-```bash
-mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5000
-# Acesse: http://localhost:5000
-```
-
-### Estrutura dos Runs
-
-```
-pv-fault-detection (experiment)
-├── historico_experimentos_completo (parent run)
-│   ├── mobilenetv2_v1_baseline
-│   ├── mobilenetv2_v2_head_melhorado
-│   ├── mobilenetv2_v3_more_finetuning
-│   ├── efficientnetb0_v1_baseline
-│   ├── efficientnetb0_v2_conservative
-│   ├── shufflenet_v1_standard_aug
-│   ├── shufflenet_v2_light_aug
-│   ├── ablation_no_colormap
-│   ├── ablation_no_equalize_hist
-│   └── ablation_bilinear_vs_bicubic
-└── pipeline_completo_YYYYMMDD (parent run)
-    ├── mobilenetv2_v_final (nested run)
-    ├── efficientnetb0_v_final (nested run)
-    └── shufflenet_v_final (nested run)
-```
-
----
-
 ## 📁 Estrutura do repositório
 
 ```
-pv-fault-detection-edge-ai/
-├── src/
-│   ├── prepare_dataset.py              # Organiza imagens em data/normal e data/defect
-│   ├── pipeline_final.py              # Pipeline de treino original (sem tracking)
-│   ├── pipeline_mlflow.py             # Pipeline de treino com MLflow tracking
-│   ├── register_experiment_history.py # Registra histórico de experimentos no MLflow
-│   ├── inference_raspberry.py         # Benchmark de inferência (Raspberry Pi)
-│   └── predict_individual.py         # Predição/visualização individual
-├── notebooks/
-│   ├── pipeline_final.ipynb
-│   └── pipeline_final_notebook_estruturado.ipynb
-├── models/                            # Modelos treinados (.keras, .tflite) — não versionado
-├── results/                           # Gráficos e CSVs de resultados
-├── results_raspberry/                 # Benchmark de inferência embarcada
-├── data/                              # Dataset organizado (não versionado)
+solar-defect-detection/
+├── data/                          # dataset original (não versionado)
 │   ├── normal/
 │   └── defect/
-├── data_split/                        # Split 70/15/15 (não versionado)
-├── mlflow.db                          # Database local do MLflow (não versionado)
-├── requirements.txt                   # Dependências PC (treino)
-├── requirements-raspberry.txt         # Dependências Raspberry Pi (inferência)
+├── data_split/                    # gerado pelo split (não versionado)
+│   ├── train/
+│   ├── val/
+│   └── test/
+├── models/                        # modelos treinados e quantizados (não versionado)
+│   ├── mobilenetv2.keras
+│   ├── mobilenetv2_f16.tflite
+│   └── mobilenetv2_int8.tflite
+├── results/                       # gráficos e CSVs de resultados
+│   ├── comparativo_acuracia.png
+│   ├── comparativo_quantizacao.png
+│   ├── resumo_comparativo.csv
+│   └── resumo_quantizacao.csv
+├── results_raspberry/             # benchmark de inferência embarcada
+│   ├── benchmark_completo.csv
+│   └── comparativo_raspberry.png
+├── notebooks/
+│   └── pipeline_final.ipynb       # pipeline completo em notebook
+├── src/
+│   ├── pipeline_final.py          # treino + avaliação + quantização (PC)
+│   ├── inference_raspberry.py     # benchmark de inferência (Raspberry Pi)
+│   └── predict_individual.py      # predição/visualização individual
+├── requirements.txt
+├── requirements-raspberry.txt
 ├── .gitignore
 ├── LICENSE
 └── README.md
@@ -164,7 +127,7 @@ pv-fault-detection-edge-ai/
 
 Divisão estratificada: **70% treino / 15% validação / 15% teste** (seed fixo = 42 para reprodutibilidade).
 
-> ⚠️ O dataset não está incluído neste repositório por questões de tamanho. Baixe do Kaggle e organize com `python src/prepare_dataset.py`.
+> ⚠️ O dataset não está incluído neste repositório por questões de tamanho. Baixe do Kaggle e organize em `data/normal/` e `data/defect/` antes de rodar o pipeline.
 
 ---
 
@@ -173,14 +136,13 @@ Divisão estratificada: **70% treino / 15% validação / 15% teste** (seed fixo 
 ### No PC (treino, avaliação e quantização)
 
 ```bash
-git clone https://github.com/seu-usuario/pv-fault-detection-edge-ai.git
-cd pv-fault-detection-edge-ai
+git clone https://github.com/seu-usuario/solar-defect-detection.git
+cd solar-defect-detection
 
 python -m venv env
 source env/bin/activate        # Linux/Mac
 env\Scripts\activate           # Windows
 
-pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
@@ -194,67 +156,41 @@ pip install -r requirements-raspberry.txt
 
 ## 🚀 Como usar
 
-### 1. Preparar dataset
+### 1. Organize o dataset
 
-Baixe o dataset do Kaggle e coloque em `InfraredSolarModules/`, depois:
-
-```bash
-python src/prepare_dataset.py
+```
+data/
+├── normal/   → imagens da classe No-Anomaly
+└── defect/   → imagens das 11 classes de defeito unificadas
 ```
 
-### 2. Registrar histórico de experimentos (opcional, rápido)
+### 2. Rode o pipeline completo (PC)
 
 ```bash
-python src/register_experiment_history.py
+python src/pipeline_final.py
 ```
 
-### 3. Treinar com MLflow tracking
+Executa automaticamente: split → pré-processamento → treino das 3 arquiteturas → avaliação → quantização Float16/INT8 → avaliação dos modelos quantizados.
+
+> Alternativa: abra `notebooks/pipeline_final.ipynb` para rodar célula por célula.
+
+### 3. Copie os modelos `.tflite` para a Raspberry Pi
 
 ```bash
-python src/pipeline_mlflow.py
+scp models/*.tflite pi@<ip-da-raspberry>:~/solar-defect-detection/models/
 ```
 
-Executa: split → pré-processamento → treino (3 arquiteturas) → avaliação → quantização → avaliação quantizada — com logging completo no MLflow.
-
-### 4. Visualizar experimentos
-
-```bash
-mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5000
-```
-
-### 5. Copiar modelos para Raspberry Pi
-
-```bash
-scp models/*.tflite pi@<ip-da-raspberry>:~/pv-fault-detection-edge-ai/models/
-```
-
-### 6. Benchmark na Raspberry Pi
+### 4. Rode o benchmark na Raspberry Pi
 
 ```bash
 python src/inference_raspberry.py --test_dir data_split/test
 ```
 
-### 7. Predição individual
+### 5. Teste uma imagem individual
 
 ```bash
 python src/predict_individual.py --image caminho/imagem.jpg --model models/mobilenetv2.keras
 ```
-
----
-
-## 🧠 Decisões técnicas
-
-| Decisão | Justificativa |
-|---------|---------------|
-| Colormap INFERNO | Imagens térmicas grayscale → RGB permite aproveitar features ImageNet. Ablation: +4% vs. grayscale puro |
-| Equalização de histograma | Faixa dinâmica estreita (9-255) nas imagens térmicas. Ablation: +2% |
-| Interpolação bicúbica | Upscale extremo (5.6×) se beneficia de interpolação suave. Ablation: +0.5% vs. bilinear |
-| Augmentation leve para ShuffleNet | Rede menor + imagens 40×24: augmentation agressivo destrói informação |
-| Head melhorado para MobileNetV2 | Dense 256+BN+Dense 64 melhora capacidade discriminativa vs. head simples |
-| Early stopping conservador para EfficientNet | Tende a overfitting — patience menor controla o gap treino-val |
-| Label smoothing 0.1 | Reduz overconfidence e melhora generalização em dataset com possível ruído nos labels |
-| AdamW no fine-tuning | Weight decay desacoplado previne overfitting nas camadas descongeladas |
-| Quantização INT8 com fallback TFLITE_BUILTINS | Resolve incompatibilidade XNNPACK mantendo precisão |
 
 ---
 
@@ -321,7 +257,6 @@ python src/predict_individual.py --image caminho/imagem.jpg --model models/mobil
 - [ ] Avaliação de arquiteturas adicionais (EfficientNet-Lite, MobileOne)
 - [ ] Conversão para TensorRT / ONNX Runtime para redução adicional de latência
 - [ ] Coleta de dataset próprio em instalações fotovoltaicas brasileiras
-- [ ] Implementar AUC-ROC e análise de threshold para otimizar recall de defeito
 
 ---
 

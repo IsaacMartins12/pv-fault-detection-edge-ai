@@ -1,6 +1,9 @@
 # ── Dataset e dados gerados ──────────────────────────────────────
 data/
 data_split/
+InfraredSolarModules/
+archive*/
+*.zip
 
 # ── Modelos treinados (geralmente grandes para o Git) ────────────
 models/
@@ -36,6 +39,11 @@ desktop.ini
 .vscode/
 .idea/
 *.swp
+
+# ── MLflow ──────────────────────────────────────────────────────────
+mlruns/
+mlartifacts/
+mlflow.db
 
 # ── Logs ────────────────────────────────────────────────────────────
 *.log
