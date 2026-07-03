@@ -109,15 +109,15 @@ pv-fault-detection (experiment)
 │   ├── mobilenetv2_v3_more_finetuning
 │   ├── efficientnetb0_v1_baseline
 │   ├── efficientnetb0_v2_conservative
-│   ├── shufflenet_v1_standard_aug
-│   ├── shufflenet_v2_light_aug
+│   ├── mobilenetv3small_v1_standard_aug
+│   ├── mobilenetv3small_v2_light_aug
 │   ├── ablation_no_colormap
 │   ├── ablation_no_equalize_hist
 │   └── ablation_bilinear_vs_bicubic
 └── pipeline_completo_YYYYMMDD (parent run)
     ├── mobilenetv2_v_final (nested run)
     ├── efficientnetb0_v_final (nested run)
-    └── shufflenet_v_final (nested run)
+    └── mobilenetv3small_v_final (nested run)
 ```
 
 ---
@@ -130,6 +130,7 @@ pv-fault-detection-edge-ai/
 │   ├── prepare_dataset.py              # Organiza imagens em data/normal e data/defect
 │   ├── pipeline_final.py              # Pipeline de treino original (sem tracking)
 │   ├── pipeline_mlflow.py             # Pipeline de treino com MLflow tracking
+│   ├── evaluate_and_quantize_mlflow.py # Avaliação + quantização (sem retreinar)
 │   ├── register_experiment_history.py # Registra histórico de experimentos no MLflow
 │   ├── inference_raspberry.py         # Benchmark de inferência (Raspberry Pi)
 │   └── predict_individual.py         # Predição/visualização individual
@@ -249,7 +250,7 @@ python src/predict_individual.py --image caminho/imagem.jpg --model models/mobil
 | Colormap INFERNO | Imagens térmicas grayscale → RGB permite aproveitar features ImageNet. Ablation: +4% vs. grayscale puro |
 | Equalização de histograma | Faixa dinâmica estreita (9-255) nas imagens térmicas. Ablation: +2% |
 | Interpolação bicúbica | Upscale extremo (5.6×) se beneficia de interpolação suave. Ablation: +0.5% vs. bilinear |
-| Augmentation leve para ShuffleNet | Rede menor + imagens 40×24: augmentation agressivo destrói informação |
+| Augmentation leve para MobileNetV3Small | Rede menor + imagens 40×24: augmentation agressivo destrói informação |
 | Head melhorado para MobileNetV2 | Dense 256+BN+Dense 64 melhora capacidade discriminativa vs. head simples |
 | Early stopping conservador para EfficientNet | Tende a overfitting — patience menor controla o gap treino-val |
 | Label smoothing 0.1 | Reduz overconfidence e melhora generalização em dataset com possível ruído nos labels |
