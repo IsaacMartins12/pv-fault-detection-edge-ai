@@ -47,7 +47,7 @@ def preprocess(image_path):
     img_resz  = cv2.resize(img_raw, IMG_SIZE, interpolation=cv2.INTER_CUBIC)
     img_norm  = cv2.normalize(img_resz, None, 0, 255, cv2.NORM_MINMAX)
     img_eq    = cv2.equalizeHist(img_norm)
-    img_color = cv2.applyColorMap(img_eq, cv2.COLORMAP_JET)
+    img_color = cv2.applyColorMap(img_eq, cv2.COLORMAP_INFERNO)
     img_rgb   = cv2.cvtColor(img_color, cv2.COLOR_BGR2RGB).astype(np.float32)
     img_batch = np.expand_dims(img_rgb, axis=0)
 

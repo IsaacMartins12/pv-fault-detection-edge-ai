@@ -114,7 +114,7 @@ ARCH_CONFIGS = {
         'version':         'v_final',
         'hypothesis':      'Head simples com early stopping conservador — controle de overfitting',
     },
-    'shufflenet': {
+    'mobilenetv3small': {
         'epochs_phase1':   10,
         'epochs_phase2':   20,
         'unfreeze_layers': 20,
@@ -246,7 +246,7 @@ def build_model(arch_name, cfg):
         x    = inputs
         base = tf.keras.applications.EfficientNetB0(
             input_shape=(*IMG_SIZE, 3), include_top=False, weights='imagenet')
-    elif arch_name == 'shufflenet':
+    elif arch_name == 'mobilenetv3small':
         x    = tf.keras.layers.Rescaling(scale=1./127.5, offset=-1.0)(inputs)
         base = tf.keras.applications.MobileNetV3Small(
             input_shape=(*IMG_SIZE, 3), include_top=False, weights='imagenet')
@@ -722,7 +722,7 @@ if __name__ == '__main__':
         for arch in ARCHITECTURES:
             # Retoma o nested run da arquitetura para logar avaliação
             with mlflow.start_run(
-                run_id=trained_models[arch]['run_id']
+                run_id=trained_models[arch]['run_id'], nested=True
             ):
                 acc, report = evaluate_model_mlflow(arch)
                 eval_results[arch] = {
@@ -748,7 +748,7 @@ if __name__ == '__main__':
         print('='*65)
 
         for arch in ARCHITECTURES:
-            with mlflow.start_run(run_id=trained_models[arch]['run_id']):
+            with mlflow.start_run(run_id=trained_models[arch]['run_id'], nested=True):
                 pf16, pint8, sf, sf16, si8 = quantize_model_mlflow(arch)
                 quant_results[arch] = {
                     'path_f16': pf16, 'path_int8': pint8,
@@ -762,7 +762,7 @@ if __name__ == '__main__':
 
         quant_rows = []
         for arch in ARCHITECTURES:
-            with mlflow.start_run(run_id=trained_models[arch]['run_id']):
+            with mlflow.start_run(run_id=trained_models[arch]['run_id'], nested=True):
                 print(f"\n  {arch.upper()}")
                 acc_full = eval_results[arch]['accuracy'] * 100
                 acc_f16  = evaluate_tflite_mlflow(

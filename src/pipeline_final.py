@@ -3,7 +3,7 @@ pipeline_final.py — Pipeline completo de treinamento, avaliação e quantizaç
 Projeto: Classificação de Defeitos em Módulos Fotovoltaicos por Imagens Termográficas
 TCC — Engenharia Elétrica
 
-Arquiteturas: MobileNetV2 | EfficientNetB0 | MobileNetV3Small (ShuffleNet)
+Arquiteturas: MobileNetV2 | EfficientNetB0 | MobileNetV3Small
 Configurações individuais por arquitetura (baseado nos experimentos v1/v2/v3)
 
 Correções aplicadas nesta versão final:
@@ -93,7 +93,7 @@ ARCH_CONFIGS = {
         'es_patience':     5,
         'augment_level':   'normal',
     },
-    'shufflenet': {
+    'mobilenetv3small': {
         'epochs_phase1':   10,
         'epochs_phase2':   20,      # igual v1 — comprovadamente estável
         'unfreeze_layers': 20,      # rede menor, menos camadas
@@ -249,7 +249,7 @@ def build_model(arch_name, cfg):
 
     Head adaptativo por arquitetura:
     - 'melhorado': Dense(256) + BN + Dropout + Dense(64) → MobileNetV2
-    - 'simples':   GlobalAvgPool + Dropout → EfficientNet e ShuffleNet
+    - 'simples':   GlobalAvgPool + Dropout → EfficientNet e MobileNetV3Small
     """
     inputs = tf.keras.Input(shape=(*IMG_SIZE, 3), name='input_image')
 
@@ -263,7 +263,7 @@ def build_model(arch_name, cfg):
         base = tf.keras.applications.EfficientNetB0(
             input_shape=(*IMG_SIZE, 3), include_top=False, weights='imagenet'
         )
-    elif arch_name == 'shufflenet':
+    elif arch_name == 'mobilenetv3small':
         x    = tf.keras.layers.Rescaling(scale=1./127.5, offset=-1.0)(inputs)
         base = tf.keras.applications.MobileNetV3Small(
             input_shape=(*IMG_SIZE, 3), include_top=False, weights='imagenet'

@@ -197,7 +197,7 @@ EXPERIMENT_HISTORY = [
             "phase": "refinement",
             "hypothesis": "Reduzir épocas (25) e patience (5) + menos camadas descongeladas (35) deve controlar overfitting",
             "conclusion": "Gap treino-val reduziu. Acurácia de teste melhorou. Config final definida.",
-            "next_step": "Config final para EfficientNetB0. Mover para ShuffleNet.",
+            "next_step": "Config final para EfficientNetB0. Mover para MobileNetV3Small.",
         },
         "params": {
             "architecture": "efficientnetb0",
@@ -227,12 +227,12 @@ EXPERIMENT_HISTORY = [
     },
 
     # ═══════════════════════════════════════════════════════════════
-    # ShuffleNet (MobileNetV3Small) — Otimização para Edge
+    # MobileNetV3Small — Otimização para Edge
     # ═══════════════════════════════════════════════════════════════
     {
-        "run_name": "shufflenet_v1_standard_aug",
+        "run_name": "mobilenetv3small_v1_standard_aug",
         "tags": {
-            "architecture": "shufflenet",
+            "architecture": "mobilenetv3small",
             "version": "v1",
             "phase": "exploration",
             "hypothesis": "MobileNetV3Small com augmentation normal e config similar às outras arquiteturas",
@@ -240,7 +240,7 @@ EXPERIMENT_HISTORY = [
             "next_step": "Testar augmentation leve e weight decay menor",
         },
         "params": {
-            "architecture": "shufflenet (MobileNetV3Small)",
+            "architecture": "mobilenetv3small",
             "version": "v1",
             "epochs_phase1": 10,
             "epochs_phase2": 20,
@@ -264,17 +264,17 @@ EXPERIMENT_HISTORY = [
         },
     },
     {
-        "run_name": "shufflenet_v2_light_aug",
+        "run_name": "mobilenetv3small_v2_light_aug",
         "tags": {
-            "architecture": "shufflenet",
+            "architecture": "mobilenetv3small",
             "version": "v2",
             "phase": "refinement",
             "hypothesis": "Augmentation leve (menos rotação/zoom) + weight decay menor (5e-5) preserva informação em imagens pequenas",
             "conclusion": "Melhoria clara. Augmentation leve é melhor para imagens de baixa resolução original (40x24). Config final.",
-            "next_step": "Config final para ShuffleNet. Prosseguir para quantização.",
+            "next_step": "Config final para MobileNetV3Small. Prosseguir para quantização.",
         },
         "params": {
-            "architecture": "shufflenet (MobileNetV3Small)",
+            "architecture": "mobilenetv3small",
             "version": "v2",
             "epochs_phase1": 10,
             "epochs_phase2": 20,
@@ -400,7 +400,7 @@ def register_all_experiments():
 
         mlflow.log_params({
             "total_experiments": len(EXPERIMENT_HISTORY),
-            "architectures_tested": "mobilenetv2, efficientnetb0, shufflenet (MobileNetV3Small)",
+            "architectures_tested": "mobilenetv2, efficientnetb0, mobilenetv3small",
             "ablation_studies": "colormap, equalize_hist, interpolation",
             "versions_per_arch": "v1 (baseline) → v2 (iteration) → v3 (refinement) → v_final",
             "methodology": "Systematic hypothesis testing with controlled variables",
