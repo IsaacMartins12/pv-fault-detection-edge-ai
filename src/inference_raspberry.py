@@ -56,12 +56,12 @@ os.makedirs(RESULTS_DIR, exist_ok=True)
 
 # Modelos a avaliar: nome → arquivo .tflite
 TFLITE_MODELS = {
-    'mobilenetv2_full_f16':   'models/mobilenetv2_f16.tflite',
-    'mobilenetv2_int8':       'models/mobilenetv2_int8.tflite',
-    'efficientnetb0_f16':     'models/efficientnetb0_f16.tflite',
-    'efficientnetb0_int8':    'models/efficientnetb0_int8.tflite',
-    'shufflenet_f16':         'models/shufflenet_f16.tflite',
-    'shufflenet_int8':        'models/shufflenet_int8.tflite',
+    'mobilenetv2_f16':       'models/mobilenetv2_f16.tflite',
+    'mobilenetv2_int8':      'models/mobilenetv2_int8.tflite',
+    'efficientnetb0_f16':    'models/efficientnetb0_f16.tflite',
+    'efficientnetb0_int8':   'models/efficientnetb0_int8.tflite',
+    'mobilenetv3small_f16':  'models/mobilenetv3small_f16.tflite',
+    'mobilenetv3small_int8': 'models/mobilenetv3small_int8.tflite',
 }
 
 # ──────────────────────────────────────────────────────────────────────────────
